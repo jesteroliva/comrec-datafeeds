@@ -36,7 +36,7 @@ test('DATAFEEDS', async ({ page }) => {
         });
         
         await test.step(`Verify file status File ID: ${id}`, async () => {
-        await page.getByRole('cell', { name: feedID }).click();
+        await page.getByRole('cell', { name: feedID }).first().click();
         await page.getByRole('button', { name: 'Files' }).click();
         await page.getByRole('searchbox', { name: 'Search...' }).fill(id);
         await expect(page.locator(`[id="${id}"]`)).toContainText('GOOD');
