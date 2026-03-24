@@ -1,11 +1,14 @@
 name: Run Playwright Tests
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
+    inputs:
+      feed_id:
+        description: 'Feed ID to search'
+        required: true
+      file_ids:
+        description: 'Comma-separated File IDs (example: 1625134,1625135)'
+        required: true
 
 jobs:
   test:
@@ -33,8 +36,8 @@ jobs:
           DEBUG: pw:api
           USERNAME_COMREC: ${{ secrets.USERNAME_COMREC }}
           PASSWORD_COMREC: ${{ secrets.PASSWORD_COMREC }}
-          FEED_ID: ${{ secrets.FEED_ID }}
-          FILE_IDS: ${{ secrets.FILE_IDS }}
+          FEED_ID: ${{ github.event.inputs.feed_id }}
+          FILE_IDS: ${{ github.event.inputs.file_ids }}
 
       - name: Upload Playwright report
         if: always()
