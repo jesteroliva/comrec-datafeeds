@@ -31,6 +31,7 @@ test('DATAFEEDS', async ({ page }) => {
         await test.step(`Search for Feed ID: ${feedID} and File ID: ${id}`, async () => {
         await page.getByRole('spinbutton', { name: 'Feed ID:' }).fill(feedID);
         await page.getByRole('button', { name: 'Search' }).click();
+        await page.waitForLoadState('networkidle');
         await screenshot(page, 'Feed-header');
         });
         
@@ -45,6 +46,17 @@ test('DATAFEEDS', async ({ page }) => {
 
         await test.step(`Download file and verify content File ID: ${id}`, async () => {
         await page.getByRole('button', { name: 'ECS Header' }).click();
+        
+
+        const ecsButton = page.getByRole('button', { name: 'ECS Details' });
+        try {
+          await ecsButton.waitFor({ state: 'visible', timeout: 5000 });
+          await page.locator(`[id="${id}-table"]`).getByRole('cell', { name: id }).click();
+          await ecsButton.click();
+        } catch {
+        }
+
+        
         const downloadPromise = page.waitForEvent('download');
         await page.getByRole('button', { name: 'Export' }).click();
         const download = await downloadPromise;
@@ -53,6 +65,7 @@ test('DATAFEEDS', async ({ page }) => {
         await download.saveAs(`downloads/${fileName}`);
         expect(require('fs').existsSync(`downloads/${fileName}`)).toBeTruthy();
         await screenshot(page, `details-${id}`);
+        
         });
 
         await test.step(`Verify ECS Header content File ID: ${id}`, async () => {

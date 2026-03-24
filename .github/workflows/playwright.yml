@@ -1,27 +1,49 @@
 name: Playwright Tests
+
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      FILE_IDS:
+        description: "Comma-separated File IDs"
+        required: true
+        default: "1622832,1622236"
+      FEED_ID:
+        description: "Feed ID"
+        required: true
+        default: "123"
+
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          USERNAME_COMREC: ${{ secrets.USERNAME_COMREC }}
+          PASSWORD_COMREC: ${{ secrets.PASSWORD_COMREC }}
+          FILE_IDS: ${{ github.event.inputs.FILE_IDS }}
+          FEED_ID: ${{ github.event.inputs.FEED_ID }}
+
+      - name: Upload screenshots & downloads
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            screenshots/
+            downloads/
