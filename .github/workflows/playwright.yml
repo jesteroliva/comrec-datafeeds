@@ -1,6 +1,10 @@
 name: Playwright Tests
 
 on:
+  push:
+    branches:
+      - main
+      - dev
   workflow_dispatch:
     inputs:
       FILE_IDS:
@@ -17,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -31,13 +35,16 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      - name: Create download directory
+        run: mkdir -p downloads screenshots
+
       - name: Run Playwright tests
         run: npx playwright test
         env:
           USERNAME_COMREC: ${{ secrets.USERNAME_COMREC }}
           PASSWORD_COMREC: ${{ secrets.PASSWORD_COMREC }}
-          FILE_IDS: ${{ github.event.inputs.FILE_IDS }}
-          FEED_ID: ${{ github.event.inputs.FEED_ID }}
+          FILE_IDS: ${{ github.event.inputs.FILE_IDS || '1622832,1622236' }}
+          FEED_ID: ${{ github.event.inputs.FEED_ID || '123' }}
 
       - name: Upload screenshots & downloads
         uses: actions/upload-artifact@v4
