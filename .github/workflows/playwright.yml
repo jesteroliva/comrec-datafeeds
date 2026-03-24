@@ -64,7 +64,7 @@ jobs:
         if: always()
         shell: powershell
         run: |
-          $processNames = @('chrome', 'msedge', 'chromium')
+          $processNames = @('chrome', 'chromium')
           foreach ($processName in $processNames) {
             Get-Process -Name $processName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
           }
