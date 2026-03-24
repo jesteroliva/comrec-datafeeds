@@ -52,3 +52,19 @@ jobs:
         with:
           name: screenshots
           path: screenshots/
+
+      - name: Upload downloads
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: downloads
+          path: downloads/
+
+      - name: Cleanup browser processes
+        if: always()
+        shell: powershell
+        run: |
+          $processNames = @('chrome', 'msedge', 'chromium')
+          foreach ($processName in $processNames) {
+            Get-Process -Name $processName -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          }
