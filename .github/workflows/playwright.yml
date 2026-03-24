@@ -28,7 +28,7 @@ jobs:
         run: npx playwright install
 
       - name: Run Playwright tests
-        run: npx playwright test tests/comrec.spec.ts --reporter=list
+        run: npx playwright test tests/comrec.spec.ts --headed --reporter=list
         env:
           DEBUG: pw:api
           USERNAME_COMREC: ${{ secrets.USERNAME_COMREC }}
