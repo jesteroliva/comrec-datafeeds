@@ -38,8 +38,8 @@ jobs:
       - name: Create download & screenshot directories
         run: mkdir -p downloads screenshots
 
-      - name: Run Playwright tests (headed)
-        run: npx playwright test --headed
+      - name: Run Playwright tests with logs
+        run: npx playwright test --headed --reporter=list
         env:
           USERNAME_COMREC: ${{ secrets.USERNAME_COMREC }}
           PASSWORD_COMREC: ${{ secrets.PASSWORD_COMREC }}
