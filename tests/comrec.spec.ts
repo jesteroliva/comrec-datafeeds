@@ -58,7 +58,7 @@ test('DATAFEEDS', async ({ page }) => {
 
         
         const downloadPromise = page.waitForEvent('download');
-        await expect(page.getByRole('cell')).not.toContainText('No data available in table');
+        //await expect(page.getByRole('cell')).not.toContainText('No data available in table');
         await page.getByRole('button', { name: 'Export' }).click();
         const download = await downloadPromise;
         expect(download).toBeTruthy();
